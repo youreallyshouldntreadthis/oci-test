@@ -24,14 +24,8 @@ jobs:
         run: |
           mkdir -p ~/.oci
           printf '%s\n' "$OCI_CONFIG" > ~/.oci/config
-          printf '%s\n' "$OCI_PRIVATE_KEY" > ~/.oci/oci_api_key.pem
+          echo -e "$OCI_PRIVATE_KEY" > ~/.oci/oci_api_key.pem
           chmod 600 ~/.oci/oci_api_key.pem
-          echo "=== CONFIG ==="
-          cat ~/.oci/config
-          echo "=== KEY FIRST LINE ==="
-          head -1 ~/.oci/oci_api_key.pem
-          echo "=== KEY LAST LINE ==="
-          tail -1 ~/.oci/oci_api_key.pem
 
       - name: Terraform Init
         run: terraform init
