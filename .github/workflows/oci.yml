@@ -29,3 +29,4 @@ jobs:
 
       - name: Run retry script
         run: bash auto.sh
+        
