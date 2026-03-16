@@ -18,11 +18,20 @@ jobs:
         uses: hashicorp/setup-terraform@v2
 
       - name: Setup OCI credentials
+        env:
+          OCI_CONFIG: ${{ secrets.OCI_CONFIG }}
+          OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.oci
-          echo "${{ secrets.OCI_CONFIG }}" > ~/.oci/config
-          echo "${{ secrets.OCI_PRIVATE_KEY }}" | tr '\\n' '\n' > ~/.oci/oci_api_key.pem
+          printf '%s\n' "$OCI_CONFIG" > ~/.oci/config
+          printf '%s\n' "$OCI_PRIVATE_KEY" > ~/.oci/oci_api_key.pem
           chmod 600 ~/.oci/oci_api_key.pem
+          echo "=== CONFIG ==="
+          cat ~/.oci/config
+          echo "=== KEY FIRST LINE ==="
+          head -1 ~/.oci/oci_api_key.pem
+          echo "=== KEY LAST LINE ==="
+          tail -1 ~/.oci/oci_api_key.pem
 
       - name: Terraform Init
         run: terraform init
