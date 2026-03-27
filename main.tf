@@ -58,15 +58,15 @@ resource "oci_core_instance" "generated_oci_core_instance" {
     recovery_action = "RESTORE_INSTANCE"
   }
 
-  availability_domain = var.availability_domain   # ← now dynamic
+  availability_domain = var.availability_domain
 
   compartment_id = "ocid1.tenancy.oc1..aaaaaaaa6k2h22qk2szk6h2eg6hebjgiqedobsxewm55zpygms3jrqsn2jva"
 
   create_vnic_details {
     assign_ipv6ip             = "false"
     assign_private_dns_record = "true"
-    assign_public_ip          = "false"
-    subnet_id                 = "${oci_core_subnet.generated_oci_core_subnet.id}"
+    assign_public_ip          = "true"
+    subnet_id                 = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaau5iupt3jueft42cuvh3zjegcf3breoiyo3xb7cbgrduynt6nmpga"
   }
 
   display_name = "instance-20260315-2228"
@@ -91,36 +91,4 @@ resource "oci_core_instance" "generated_oci_core_instance" {
     source_id   = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaasoblespfnzqa67jnq4psbpnbal4mlh2tpwnlhnhvmkhzuqbrxu4a"
     source_type = "image"
   }
-}
-
-resource "oci_core_vcn" "generated_oci_core_vcn" {
-  cidr_block     = "10.0.0.0/16"
-  compartment_id = "ocid1.tenancy.oc1..aaaaaaaa6k2h22qk2szk6h2eg6hebjgiqedobsxewm55zpygms3jrqsn2jva"
-  display_name   = "vcn-20260315-2229"
-  dns_label      = "vcn03152229"
-}
-
-resource "oci_core_subnet" "generated_oci_core_subnet" {
-  cidr_block        = "10.0.0.0/24"
-  compartment_id    = "ocid1.tenancy.oc1..aaaaaaaa6k2h22qk2szk6h2eg6hebjgiqedobsxewm55zpygms3jrqsn2jva"
-  display_name      = "subnet-20260315-2229"
-  dns_label         = "subnet03152229"
-  route_table_id    = "${oci_core_vcn.generated_oci_core_vcn.default_route_table_id}"
-  vcn_id            = "${oci_core_vcn.generated_oci_core_vcn.id}"
-}
-
-resource "oci_core_internet_gateway" "generated_oci_core_internet_gateway" {
-  compartment_id = "ocid1.tenancy.oc1..aaaaaaaa6k2h22qk2szk6h2eg6hebjgiqedobsxewm55zpygms3jrqsn2jva"
-  display_name   = "Internet Gateway vcn-20260315-2229"
-  enabled        = "true"
-  vcn_id         = "${oci_core_vcn.generated_oci_core_vcn.id}"
-}
-
-resource "oci_core_default_route_table" "generated_oci_core_default_route_table" {
-  route_rules {
-    destination       = "0.0.0.0/0"
-    destination_type  = "CIDR_BLOCK"
-    network_entity_id = "${oci_core_internet_gateway.generated_oci_core_internet_gateway.id}"
-  }
-  manage_default_resource_id = "${oci_core_vcn.generated_oci_core_vcn.default_route_table_id}"
 }
